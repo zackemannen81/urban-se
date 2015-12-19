@@ -1,0 +1,36 @@
+{
+  "name": "urban-se",
+  "version": "1.0.0",
+  "description": "A Yellow and whitepages lookup API for sweden",
+  "main": "server.js",
+  "dependencies": {
+    "encoding": "^0.1.11",
+    "mimelib": "^0.2.19",
+    "vcard": "^0.0.9",
+    "vcardparser": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zackemannen81/urban-se.git"
+  },
+  "keywords": [
+    "nodejs",
+    "nightmare",
+    "api",
+    "crawler",
+    "data",
+    "extraction",
+    "sweden"
+  ],
+  "author": "Zackemannen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zackemannen81/urban-se/issues"
+  },
+  "homepage": "https://github.com/zackemannen81/urban-se#readme"
+}
