@@ -1,8 +1,7 @@
 var createCompounder = require('../internal/createCompounder');
 
 /**
- * Converts `string` to snake case.
- * See [Wikipedia](https://en.wikipedia.org/wiki/Snake_case) for more details.
+ * Converts `string` to [snake case](https://en.wikipedia.org/wiki/Snake_case).
  *
  * @static
  * @memberOf _
@@ -14,10 +13,10 @@ var createCompounder = require('../internal/createCompounder');
  * _.snakeCase('Foo Bar');
  * // => 'foo_bar'
  *
- * _.snakeCase('--foo-bar');
+ * _.snakeCase('fooBar');
  * // => 'foo_bar'
  *
- * _.snakeCase('fooBar');
+ * _.snakeCase('--foo-bar');
  * // => 'foo_bar'
  */
 var snakeCase = createCompounder(function(result, word, index) {

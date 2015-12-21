@@ -24,7 +24,7 @@ var baseToString = require('../internal/baseToString'),
  * // => 'abc'
  *
  * _.map(['  foo  ', '  bar  '], _.trim);
- * // => ['foo', 'bar]
+ * // => ['foo', 'bar']
  */
 function trim(string, chars, guard) {
   var value = string;
@@ -35,7 +35,7 @@ function trim(string, chars, guard) {
   if (guard ? isIterateeCall(value, chars, guard) : chars == null) {
     return string.slice(trimmedLeftIndex(string), trimmedRightIndex(string) + 1);
   }
-  chars = baseToString(chars);
+  chars = (chars + '');
   return string.slice(charsLeftIndex(string, chars), charsRightIndex(string, chars) + 1);
 }
 
