@@ -15,6 +15,7 @@ var request =require('request');
 var http = require('http');
 var mongoose = require('mongoose');
 var vCardSchema = require('mongoose-schema-vcard');
+var Table = require('cli-table');
 
 var vcardUri;
 var person;
@@ -137,7 +138,8 @@ router.get('/', function(req, res) {
     res.json({ message: 'Yeah welcome to pentagon API! not authorized dude!' });   
 });
 
-router.get('/getInfoFromSsnr/:ssnr', function(req, res) {
+
+router.get('/getInfoFromSsnr/:ssnr',function(req, res) {
     var personnummerSeek=req.params.ssnr;
 var options = { method: 'POST',encoding: 'binary',
   url: 'https://www.skapamer.se/ajax/ajax_get_klarna_address.php',
@@ -151,7 +153,7 @@ request(options, function (error, response, body) {
   if (error) throw new Error(error);
 
   console.log(body);
-  res.send(body);
+  res.json(body);
 });
 });
 router.route('/formatnumber/:phonenr')
@@ -278,7 +280,7 @@ var searchstring='+46'+req.params.phonenr.substring(1) ;
       person.count({ 'tel.value' : searchstring}, function (err,recordCount) {
     if (err) {return console.log(err);res.json({ message: error }); }
     if (recordCount<1){
- 
+ console.log(recordCount);
 
 
 request(reqUrl, function (error, response, body) {
@@ -317,6 +319,7 @@ if (JSON.parse(body).web[0].type=='prv')  	vcardUri='http://www.hitta.se/vcard_p
 //console.log(operator);
 	                for (var i = 0; i < Object.keys(jData.tel).length; i++) {
                         jData.tel[i].opflg=""+operator.d[i].Name+"";
+                        jData.tel[i].prio=i;
                     
                 }
     //jData.tel[0].opflg=""+operator+"";
@@ -346,6 +349,7 @@ console.log(jData);
 //obj.tel[0].type + " " + obj.tel[0].value;
     //jData.tel[0].value=searchstring;
             jData.id=jData.tel[0].value;
+            jData.tel[0].prio=0;
             //console.log(jData.tel[0].value.replace('+','').substring(2));
          findOperator('0'+jData.tel[0].value.replace('+','').substring(2),function(err,operator){
             //jData.tel[0].opflg=""+findOperator('0'+jData.tel[0].value.replace('+','').substring(2))+"";
@@ -408,6 +412,28 @@ person.find({ 'tel.value' : searchstring}, function (err, doc) {
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 //curl 'https://www.skapamer.se/ajax/ajax_get_klarna_address.php' -H 'Cookie: nav=b%3A0%3B; sa=1128518; zenid=lk6ns6hkque5b6hl8p0nh2h560; cookie_test=please_accept_for_session' -H 'X-NewRelic-ID: XAECV1RSGwYIXFBWAQk=' -H 'Origin: https://www.skapamer.se' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: sv-SE,sv;q=0.8,en-US;q=0.6,en;q=0.4' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' -H 'Accept: */*' -H 'Referer: https://www.skapamer.se/index.php?main_page=checkout' -H 'X-Requested-With: XMLHttpRequest' -H 'Connection: keep-alive' --data 'personnummer=810117-1935' --compressed
+router.get('/listEndpoints', function(req, res) {
+    //res.json({ message: encoding.convert('Yeah welcome to pentagon API!', "Latin_1" ).toString('Latin_1')});   
+    var routes=router.stack;
+    var table = new Table({ head: ["", "Name", "Path"] });
+    var jsonRoutes='[{ "endpoints ": {';
+    for (var key in routes) {
+        if (routes.hasOwnProperty(key)) {
+            var val = routes[key];
+            if(val.route)
+            {
+                val = val.route;
+                var _o = {};
+                _o[val.stack[0].method]  = [val.path, val.path ];   
+                jsonRoutes+='{[ "type" : "'+val.stack[0].method+'","path" : "'+val.path+'"]}'
+                table.push(_o);
+            }
+            
+        }
+    }jsonRoutes+='}}]';
+    console.log(table.toString());
+        res.send(jsonRoutes);
+});
 app.use('/api', router);
 
 // START THE SERVER
